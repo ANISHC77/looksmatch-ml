@@ -1,0 +1,23 @@
+# Captured face geometry is personal biometric data. Never commit it.
+data/raw/**
+!data/raw/.gitkeep
+!data/raw/README.txt
+data/processed/**
+!data/processed/.gitkeep
+data/labels/**
+!data/labels/.gitkeep
+!data/labels/*.template
+
+models/**
+!models/.gitkeep
+outputs/**
+!outputs/.gitkeep
+
+# Detected/observed configuration is machine-specific.
+config/axis_convention.json
+
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/

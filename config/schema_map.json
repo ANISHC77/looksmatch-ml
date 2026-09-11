@@ -1,0 +1,66 @@
+{
+  "_README": [
+    "Maps CANONICAL field names used by the Python pipeline -> candidate keys that",
+    "may appear in the JSON exported by the iOS ARKit app.",
+    "",
+    "HOW LOOKUP WORKS (see src/data_loader.py::resolve_field):",
+    "  1. Each candidate is a dot-path, e.g. 'geometry.vertices'. Path segments are",
+    "     matched case-insensitively and ignoring '_' so 'blend_shapes' matches",
+    "     'blendShapes'.",
+    "  2. Candidates are tried in order; the first one that resolves wins.",
+    "  3. If no candidate resolves, the loader falls back to a bounded recursive",
+    "     search for any key matching the candidate leaf names.",
+    "",
+    "IF YOUR EXPORT USES A DIFFERENT KEY: add it to the front of the relevant list.",
+    "No Python changes are needed. Run `python -m src.inspect_schema <file.json>`",
+    "to print the real key tree of a capture and see what is currently unresolved."
+  ],
+
+  "required": ["participant_id", "vertices", "triangle_indices"],
+
+  "fields": {
+    "capture_id":        ["capture_id", "captureId", "capture", "id", "frame_id", "frameId", "metadata.capture_id"],
+    "participant_id":    ["participant_id", "participantId", "subject_id", "subjectId", "participant", "subject", "pid", "metadata.participant_id"],
+    "session_id":        ["session_id", "sessionId", "session"],
+    "timestamp":         ["timestamp", "time", "captured_at", "capturedAt", "date", "metadata.timestamp"],
+
+    "vertices":          ["vertices", "verts", "vertexList", "geometry.vertices", "faceGeometry.vertices", "mesh.vertices", "points"],
+    "triangle_indices":  ["triangleIndices", "triangle_indices", "indices", "faces", "triangles", "geometry.triangleIndices", "faceGeometry.triangleIndices", "mesh.indices"],
+    "texture_coordinates": ["textureCoordinates", "texture_coordinates", "textureCoords", "uv", "uvs", "geometry.textureCoordinates"],
+
+    "vertex_count":      ["vertexCount", "vertex_count", "geometry.vertexCount"],
+    "triangle_count":    ["triangleCount", "triangle_count", "geometry.triangleCount"],
+
+    "blend_shapes":      ["blendShapes", "blend_shapes", "blendShapeCoefficients", "blendshapes", "expressions"],
+
+    "transform":         ["transform", "faceTransform", "anchorTransform", "modelMatrix", "worldTransform", "matrix"],
+    "left_eye_transform":  ["leftEyeTransform", "left_eye_transform", "leftEye.transform", "eyes.left"],
+    "right_eye_transform": ["rightEyeTransform", "right_eye_transform", "rightEye.transform", "eyes.right"],
+    "look_at_point":     ["lookAtPoint", "look_at_point", "gaze"],
+
+    "camera":            ["camera", "cameraMetadata", "camera_metadata", "cameraInfo", "metadata.camera"],
+    "camera_transform":  ["cameraTransform", "camera_transform", "camera.transform", "viewMatrix"],
+    "camera_intrinsics": ["cameraIntrinsics", "camera_intrinsics", "camera.intrinsics", "intrinsics"],
+    "device_model":      ["deviceModel", "device_model", "device", "metadata.device"],
+    "tracking_state":    ["trackingState", "tracking_state", "trackingQuality"],
+
+    "coordinate_space":  ["coordinateSpace", "coordinate_space", "space", "vertexSpace", "frame_of_reference"],
+    "units":             ["units", "unit", "lengthUnits"],
+    "schema_version":    ["schemaVersion", "schema_version", "version", "formatVersion"]
+  },
+
+  "notes": {
+    "coordinate_space": [
+      "Declares which frame `vertices` live in. Recognised values (case-insensitive):",
+      "  'face' | 'face_local' | 'anchor' | 'local'  -> ARFaceGeometry vertices as-is",
+      "       (ARKit's native output: already relative to the ARFaceAnchor).",
+      "  'world' | 'global'                          -> anchor transform ALREADY applied.",
+      "If absent, the loader assumes 'face_local' (ARKit's native ARFaceGeometry space)",
+      "and records assumption 'coordinate_space_defaulted'. See docs/ASSUMPTIONS.md."
+    ],
+    "units": [
+      "ARKit reports face geometry in METRES. If your export converts to mm or cm,",
+      "set this field so the loader can rescale. Recognised: m, meters, metres, cm, mm."
+    ]
+  }
+}

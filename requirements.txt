@@ -1,0 +1,29 @@
+# Looksmatch ML pipeline -- core dependencies.
+# Verified working together on Python 3.13.7 / Windows 11 (versions in comments).
+
+numpy>=1.26            # 2.5.3   arrays, all geometry
+scipy>=1.11            # 1.18.1  KDTree, midplane optimisation, t-intervals
+pandas>=2.0            # 3.0.5   feature/rating tables
+scikit-learn>=1.3      # 1.9.1   pipelines, grouped splits, baseline models
+matplotlib>=3.7        # 3.11.2  plots + the fallback 3D viewer
+xgboost>=2.0           # 3.4.1   gradient-boosted baseline
+shap>=0.44             # 0.52.0  model interpretability
+pytest>=7.4            # 9.1.1   test suite
+
+# ---------------------------------------------------------------------------
+# OPTIONAL: Open3D -- interactive 3D viewer and the shift+click landmark picker.
+#
+#   NOT INSTALLED BY DEFAULT, and deliberately not listed above: Open3D
+#   publishes no wheel for Python 3.13, which is the interpreter this project
+#   was set up with. `pip install open3d` on 3.13 fails with
+#   "No matching distribution found".
+#
+#   Everything in the pipeline works without it -- src/visualization.py falls
+#   back to matplotlib automatically and reports which backend it used.
+#
+#   To get the Open3D viewer, build the venv on Python 3.12:
+#       py -3.12 -m venv .venv
+#       .venv\Scripts\python -m pip install -r requirements.txt open3d
+#   Then re-check with:  python -c "import open3d; print(open3d.__version__)"
+# ---------------------------------------------------------------------------
+# open3d>=0.18

@@ -1,0 +1,98 @@
+{
+  "_README": [
+    "Maps anatomical landmark names -> ARFaceGeometry VERTEX INDICES.",
+    "",
+    "WHY THIS IS EMPTY BY DEFAULT",
+    "Apple does not publish a landmark index for ARFaceGeometry. There is no",
+    "documented, guaranteed-stable mapping from 'vertex 1089' to 'nose tip'.",
+    "Index lists found online are reverse-engineered, unversioned, and differ",
+    "between sources. Hard-coding one would silently corrupt every downstream",
+    "measurement, so this file ships EMPTY and the pipeline runs without it.",
+    "",
+    "WHAT RUNS WITHOUT LANDMARKS",
+    "Normalisation (src/normalization.py) and the landmark-free half of feature",
+    "extraction (src/features.py) need NO entries here. They use the ARKit eye",
+    "transforms plus mesh-intrinsic quantities (symmetry plane, centroid size,",
+    "cross-sectional widths). Symmetry (src/symmetry.py) needs no entries either.",
+    "",
+    "HOW TO POPULATE IT (only if you want landmark-based features)",
+    "  1. python -m src.landmarks pick data/raw/P0001/frontal_001.json",
+    "     Opens the mesh, you shift+click a point, it prints the vertex index.",
+    "  2. Add the index below under the matching name.",
+    "  3. python -m src.landmarks verify data/raw/P0001/frontal_001.json",
+    "     Re-renders with your landmarks highlighted, so you can confirm each one",
+    "     sits where you think it does.",
+    "  4. python -m src.landmarks check data/raw   (consistency across captures)",
+    "",
+    "IMPORTANT: indices are only valid for ONE mesh topology. If validation",
+    "reports inconsistent vertex counts across your cohort, these indices do not",
+    "transfer between the differing captures.",
+    "",
+    "Set a name to null (or omit it) to leave that landmark undefined. Features",
+    "that need an undefined landmark are emitted as NaN, never silently faked."
+  ],
+
+  "topology": {
+    "vertex_count": null,
+    "note": "Set to the vertex count of the mesh these indices were picked on. The pipeline refuses to apply them to a mesh with a different vertex count."
+  },
+
+  "landmarks": {
+    "nasion": null,
+    "nose_tip": null,
+    "subnasale": null,
+    "nose_left_ala": null,
+    "nose_right_ala": null,
+
+    "left_eye_inner": null,
+    "left_eye_outer": null,
+    "right_eye_inner": null,
+    "right_eye_outer": null,
+
+    "mouth_left_corner": null,
+    "mouth_right_corner": null,
+    "upper_lip_centre": null,
+    "lower_lip_centre": null,
+
+    "chin_tip": null,
+    "menton": null,
+
+    "left_gonion": null,
+    "right_gonion": null,
+    "left_zygion": null,
+    "right_zygion": null,
+
+    "trichion": null,
+    "glabella": null
+  },
+
+  "definitions": {
+    "nasion": "Midline point at the root of the nose, at the naso-frontal suture (deepest point of the bridge between the eyes).",
+    "nose_tip": "Pronasale: the most anterior point of the nose.",
+    "subnasale": "Midline point where the nasal septum meets the upper lip.",
+    "nose_left_ala": "Alare, left: most lateral point of the left nostril wing.",
+    "nose_right_ala": "Alare, right: most lateral point of the right nostril wing.",
+    "left_eye_inner": "Endocanthion, left: inner corner of the left palpebral fissure.",
+    "left_eye_outer": "Exocanthion, left: outer corner of the left palpebral fissure.",
+    "right_eye_inner": "Endocanthion, right.",
+    "right_eye_outer": "Exocanthion, right.",
+    "mouth_left_corner": "Cheilion, left: lateral corner of the mouth.",
+    "mouth_right_corner": "Cheilion, right.",
+    "upper_lip_centre": "Labiale superius: midline of the upper vermilion border.",
+    "lower_lip_centre": "Labiale inferius: midline of the lower vermilion border.",
+    "chin_tip": "Pogonion: most anterior midline point of the chin.",
+    "menton": "Gnathion/menton: lowest midline point of the chin.",
+    "left_gonion": "Gonion, left: most lateral point of the mandibular angle (jaw corner).",
+    "right_gonion": "Gonion, right.",
+    "left_zygion": "Zygion, left: most lateral point of the zygomatic arch (cheekbone).",
+    "right_zygion": "Zygion, right.",
+    "trichion": "Midline hairline. NOTE: ARFaceGeometry does not reliably extend to the hairline; this may be unobtainable.",
+    "glabella": "Most prominent midline point of the forehead between the brows."
+  },
+
+  "_side_convention": [
+    "'left' and 'right' refer to the SUBJECT'S OWN left and right, not the",
+    "viewer's. src/normalization.py resolves which signed axis corresponds to the",
+    "subject's left by detection, and reports it -- see docs/NORMALIZATION.md."
+  ]
+}
